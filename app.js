@@ -18,7 +18,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
 // Set up a whitelist and check against it:
-var whitelist = ['http://localhost:3001']
+var whitelist = ['http://localhost:3001', 'http://localhost:3000'];
 var corsOptions = {
   origin: function (origin, callback) {
     console.log(origin);
@@ -31,7 +31,7 @@ var corsOptions = {
 }
 
 // Then pass them to cors:
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.use(logger('dev'));
 app.use(express.json());
