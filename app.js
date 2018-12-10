@@ -7,7 +7,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-// var cors = require('cors');
+var cors = require('cors');
 
 var indexRouter = require('./routes/index');
 
@@ -17,24 +17,27 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
+// Set up a whitelist and check against it:
+var whitelist = ['http://localhost:3001']
+var corsOptions = {
+  origin: function (origin, callback) {
+    console.log(origin);
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+
+// Then pass them to cors:
+app.use(cors(corsOptions));
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-// var corsOptions = {
-//   origin: 'http://localhost:3000',
-//   optionsSuccessStatus: 200
-// }
-
-// app.get('/', cors(corsOptions), function (req, res, next) {
-//   res.json({msg: 'This is CORS-enabled for only example.com.'})
-// })
-
-// app.listen(80, function () {
-//   console.log('CORS-enabled web server listening on port 80')
-// })
 
 app.use('/', indexRouter);
 
